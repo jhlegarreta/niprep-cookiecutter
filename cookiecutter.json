@@ -1,0 +1,6 @@
+{
+  "project_name": "MyPrep",
+  "project_slug": "myprep",
+  "project_description": "A BIDS-App preprocessing pipeline for neuroimaging data",
+  "python": "3.10"
+}

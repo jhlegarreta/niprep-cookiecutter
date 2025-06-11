@@ -1,0 +1,3 @@
+# Contributing to *{{ cookiecutter.project_name }}*
+
+*{{ cookiecutter.project_name }}* is a project of the [*NiPreps* Community, which specifies the contributing guidelines](https://www.nipreps.org/community/).

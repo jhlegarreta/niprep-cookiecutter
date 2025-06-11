@@ -1,0 +1,30 @@
+{
+  "queries": {
+    "baseline": {
+      "preproc": {
+        "datatype": "anat",
+        "space": null,
+        "desc": "preproc",
+        "suffix": "T1w",
+        "extension": [
+          ".nii.gz",
+          ".nii"
+        ]
+      },
+      "mask": {
+        "datatype": "anat",
+        "space": null,
+        "desc": "brain",
+        "suffix": "mask",
+        "extension": [
+          ".nii.gz",
+          ".nii"
+        ]
+      }
+    },
+    "patterns": [
+      "sub-{subject}[/ses-{session}]/{datatype<anat>|anat}/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_space-{space}][_desc-{desc}]_{suffix<T1w|T2w|T1rho|T1map|T2map|T2star|FLAIR|FLASH|PDmap|PD|PDT2|dseg|inplaneT[12]|angio>}.{extension<nii|nii.gz|json>|nii.gz}",
+      "sub-{subject}[/ses-{session}]/{datatype<anat>|anat}/sub-{subject}[_ses-{session}][_acq-{acquisition}][_ce-{ceagent}][_rec-{reconstruction}][_space-{space}]_desc-{desc}_{suffix<mask>|mask}.{extension<nii|nii.gz|json>|nii.gz}"
+    ]
+  }
+}

@@ -1,0 +1,190 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs", "nipreps-versions"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ cookiecutter.project_slug }}"
+description = "{{ cookiecutter.project_description }}"
+authors = [{name = "The NiPreps Developers", email = "nipreps@gmail.com"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+]
+license = "Apache-2.0"
+requires-python = "{{ cookiecutter.python }}"
+dependencies = [
+    "acres",
+    "joblib",
+    "nibabel",
+    "nipype",
+    "nireports",
+    "nitransforms",
+    "niworkflows",
+    "numpy",
+    "packaging",
+    "pybids",
+    "templateflow",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Docker Images" = "https://hub.docker.com/r/nipreps/{{ cookiecutter.project_slug }}/tags/"
+Documentation = "https://www.nipreps.org/{{ cookiecutter.project_slug }}"
+Home = "https://github.com/nipreps/{{ cookiecutter.project_slug }}"
+NiPreps = "https://www.nipreps.org/"
+
+[project.optional-dependencies]
+doc = [
+    "pydot",
+    "sphinx",
+    "sphinx-argparse",
+    "sphinx_rtd_theme",
+]
+dev = [
+    "ruff",
+    "pre-commit",
+]
+duecredit = ["duecredit"]
+resmon = []
+container = [
+    "{{ cookiecutter.project_slug }}[telemetry]",
+    # templateflow extras
+    "datalad",
+    "datalad-osf",
+]
+telemetry = [
+    "migas",
+    "sentry-sdk",
+]
+test = [
+    "coverage[toml]",
+    "pytest",
+    "pytest-cov",
+    "pytest-env",
+    "pytest-xdist",
+]
+maint = [
+    "fuzzywuzzy",
+    "python-Levenshtein",
+]
+# Aliases
+docs = ["{{ cookiecutter.project_slug }}[doc]"]
+tests = ["{{ cookiecutter.project_slug }}[test]"]
+all = ["{{ cookiecutter.project_slug }}[doc,maint,telemetry,test]"]
+
+[project.scripts]
+{{ cookiecutter.project_slug }} = "{{ cookiecutter.project_slug }}.cli.run:main"
+
+#
+# Hatch configurations
+#
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.sdist]
+exclude = [".git_archival.txt"]  # No longer needed in sdist
+
+[tool.hatch.build.targets.wheel]
+packages = ["{{ cookiecutter.project_slug }}"]
+exclude = [
+    "{{ cookiecutter.project_slug }}/data/tests/work",  # Large test data directory
+]
+
+##  The following two sections configure setuptools_scm in the hatch way
+
+[tool.hatch.version]
+source = "vcs"
+raw-options = { version_scheme = "nipreps-calver" }
+
+[tool.hatch.build.hooks.vcs]
+version-file = "{{ cookiecutter.project_slug }}/_version.py"
+
+#
+# Developer tool configurations
+#
+
+# Disable black
+[tool.black]
+exclude = ".*"
+
+[tool.pytest.ini_options]
+minversion = "6"
+testpaths = ["{{ cookiecutter.project_slug }}"]
+log_cli_level = "INFO"
+xfail_strict = true
+norecursedirs = [".git"]
+addopts = [
+  "-svx",
+  "-ra",
+  "--strict-config",
+  "--strict-markers",
+  "--doctest-modules",
+  # Config pytest-cov
+  "--cov={{ cookiecutter.project_slug }}",
+  "--cov-report=xml",
+  "--cov-config=pyproject.toml",
+]
+doctest_optionflags = "ALLOW_UNICODE NORMALIZE_WHITESPACE ELLIPSIS"
+env = "PYTHONHASHSEED=0"
+filterwarnings = ["ignore::DeprecationWarning"]
+junit_family = "xunit2"
+
+[tool.ruff]
+line-length = 99
+
+[tool.ruff.lint]
+extend-select = [
+  "F",
+  "E",
+  "W",
+  "I",
+  "UP",
+  "YTT",
+  "S",
+  "BLE",
+  "B",
+  "A",
+  # "CPY",
+  "C4",
+  "DTZ",
+  "T10",
+  # "EM",
+  "EXE",
+  "FA",
+  "ISC",
+  "ICN",
+  "PT",
+  "Q",
+]
+ignore = [
+  "S311",  # We are not using random for cryptographic purposes
+  "S603",
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.lint.extend-per-file-ignores]
+"*/test_*.py" = ["S101"]
+"{{ cookiecutter.project_slug }}/utils/debug.py" = ["A002", "T100"]
+"docs/conf.py" = ["A001"]
+"docs/sphinxext/github_link.py" = ["BLE001"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/_version.py"
+]
+
+[tool.coverage.paths]
+source = [
+  "{{ cookiecutter.project_slug }}",
+  "**/site-packages/{{ cookiecutter.project_slug }}"
+]
